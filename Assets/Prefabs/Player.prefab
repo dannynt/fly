@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 5553648574812460336}
   - component: {fileID: 3921147359321522310}
   - component: {fileID: 5887903859819885262}
+  - component: {fileID: 3689157297030179358}
   m_Layer: 0
   m_Name: FlyingCarController
   m_TagString: Untagged
@@ -147,7 +148,7 @@ MonoBehaviour:
   decelerationRate: 100
   engineGripStrength: 80
   verticalThrust: 3000
-  turnTorque: 1000
+  turnTorque: 500
   enableAllJuice: 1
   enableDynamicTilt: 1
   enableHoverBob: 1
@@ -238,6 +239,23 @@ CapsuleCollider:
   m_Height: 2.912104
   m_Direction: 2
   m_Center: {x: 0, y: 0.4508021, z: 0.005895257}
+--- !u!114 &3689157297030179358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6662465094467225312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f4b6bc501b80c4ea82f9798f803e2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleHealth
+  maxHealth: 100
+  minImpactForce: 5
+  damageMultiplier: 1
+  damageCooldown: 0.3
+  deathTumbleForce: 50
 --- !u!1 &8924488294035203259
 GameObject:
   m_ObjectHideFlags: 0

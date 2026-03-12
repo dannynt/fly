@@ -1,0 +1,104 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:uie="UnityEditor.UIElements">
+
+    <ui:Style src="GameHUD.uss" />
+
+    <ui:VisualElement name="hud-root">
+
+        <!-- TOP-RIGHT: Speed + Health + Wanted stacked -->
+        <ui:VisualElement name="top-right-cluster">
+
+            <!-- Speed readout -->
+            <ui:VisualElement name="speed-panel">
+                <ui:Label name="speed-value" text="0" />
+                <ui:Label name="speed-unit" text="KM/H" />
+                <ui:VisualElement name="speed-bar-track">
+                    <ui:VisualElement name="speed-bar-fill" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Health strip -->
+            <ui:VisualElement name="health-strip">
+                <ui:Label name="health-icon" text="HP" />
+                <ui:VisualElement name="health-bar-container">
+                    <ui:VisualElement name="health-bar-fill" />
+                </ui:VisualElement>
+                <ui:Label name="health-text" text="100" />
+            </ui:VisualElement>
+
+            <!-- Wanted (hidden when no heat) -->
+            <ui:VisualElement name="wanted-panel">
+                <ui:VisualElement name="star-row">
+                    <ui:Label name="wanted-label" text="WANTED" />
+                    <ui:Label name="star-text" text="" />
+                </ui:VisualElement>
+                <ui:VisualElement name="heat-bar-container">
+                    <ui:VisualElement name="heat-bar-fill" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+        <!-- BOTTOM-LEFT: Minimap -->
+        <ui:VisualElement name="minimap-panel">
+            <ui:VisualElement name="minimap-image" />
+            <ui:VisualElement name="minimap-blip" />
+            <ui:Label name="minimap-label" text="MAP" />
+        </ui:VisualElement>
+
+        <!-- TOP-LEFT: Money display -->
+        <ui:VisualElement name="money-panel">
+            <ui:Label name="money-icon" text="$" />
+            <ui:Label name="money-value" text="500" />
+        </ui:VisualElement>
+
+        <!-- LEFT-CENTER: Active delivery panel -->
+        <ui:VisualElement name="delivery-panel">
+            <ui:VisualElement name="delivery-header">
+                <ui:Label name="delivery-type-label" text="DELIVERY" />
+                <ui:Label name="delivery-status-label" text="Pick up package" />
+            </ui:VisualElement>
+
+            <!-- Reward -->
+            <ui:VisualElement name="delivery-reward-row">
+                <ui:Label name="delivery-reward-icon" text="$" />
+                <ui:Label name="delivery-reward-value" text="100" />
+            </ui:VisualElement>
+
+            <!-- Package health (fragile only) -->
+            <ui:VisualElement name="pkg-health-strip">
+                <ui:Label name="pkg-health-icon" text="PKG" />
+                <ui:VisualElement name="pkg-health-bar-container">
+                    <ui:VisualElement name="pkg-health-bar-fill" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Timer (timed only) -->
+            <ui:Label name="delivery-timer" text="45.0" />
+        </ui:VisualElement>
+
+        <!-- CENTER: Arrest overlay -->
+        <ui:VisualElement name="arrest-overlay">
+            <ui:VisualElement name="arrest-box">
+                <ui:Label name="arrest-text" text="BUSTED" />
+                <ui:Label name="arrest-penalty" text="-$0" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- CENTER: Delivery result flash -->
+        <ui:VisualElement name="delivery-result-overlay">
+            <ui:Label name="delivery-result-text" text="" />
+        </ui:VisualElement>
+
+        <!-- CENTER: WRECKED overlay -->
+        <ui:VisualElement name="wrecked-overlay">
+            <ui:VisualElement name="wrecked-box">
+                <ui:Label name="wrecked-text" text="WRECKED" />
+                <ui:Button name="repair-btn" text="REPAIR ($200)" />
+                <ui:Button name="restart-btn" text="RESTART" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

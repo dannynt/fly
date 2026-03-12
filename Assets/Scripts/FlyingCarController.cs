@@ -33,6 +33,8 @@ public class FlyingCarController : MonoBehaviour
     public bool enableCartoonySquash = false;
     [Tooltip("Maintains current altitude when not actively ascending or descending, like a helicopter.")]
     public bool enableHeightHold = true;
+    [Tooltip("Adds pitch tilt, thruster rumble, and squash/stretch when ascending or descending.")]
+    public bool enableVerticalJuice = true;
 
     [Header("Tilt Juice Tuning")]
     [Tooltip("Pitches the nose down when flying forward, up when reversing.")]
@@ -44,6 +46,14 @@ public class FlyingCarController : MonoBehaviour
     [Tooltip("How aggressively the thrusters fight to stabilize to the target angle.")]
     public float stabilizationStrength = 300f;
     
+    [Header("Vertical Juice Tuning")]
+    [Tooltip("Max pitch tilt (degrees) when ascending/descending. Nose tilts up when rising, down when diving.")]
+    public float maxVerticalPitchTilt = 18f;
+    [Tooltip("Random lateral jitter force when thrusting vertically, simulating thruster vibration.")]
+    public float thrusterRumbleStrength = 800f;
+    [Tooltip("How much the car stretches vertically when ascending/descending.")]
+    public float verticalSquashStretchAmount = 0.12f;
+
     [Header("Bob & Height Tuning")]
     public float hoverBobAmplitude = 300f;
     public float hoverBobSpeed = 2.5f;
@@ -73,6 +83,8 @@ public class FlyingCarController : MonoBehaviour
     public InputAction grabAction = new InputAction("Grab", type: InputActionType.Button);
 
     private Rigidbody rb;
+    private VehicleHealth vehicleHealth;
+    private bool isDead;
     
     // Inputs
     private Vector2 moveInput;
@@ -175,10 +187,65 @@ public class FlyingCarController : MonoBehaviour
         rb.angularDamping = angularDrag;
         
         targetHeight = transform.position.y;
+
+        vehicleHealth = GetComponent<VehicleHealth>();
+        if (vehicleHealth != null)
+        {
+            vehicleHealth.OnDeath += OnVehicleDeath;
+            vehicleHealth.OnRepaired += OnVehicleRepaired;
+        }
+
+        PoliceCarController.OnPlayerArrested += OnArrested;
+    }
+
+    void OnDestroy()
+    {
+        if (vehicleHealth != null)
+        {
+            vehicleHealth.OnDeath -= OnVehicleDeath;
+            vehicleHealth.OnRepaired -= OnVehicleRepaired;
+        }
+        PoliceCarController.OnPlayerArrested -= OnArrested;
+    }
+
+    private void OnVehicleDeath()
+    {
+        isDead = true;
+        // Release any grabbed object
+        if (grabbedObject != null) Release();
+        // Remove hover so the car falls
+        rb.linearDamping = 0.5f;
+        rb.angularDamping = 0.5f;
+    }
+
+    private void OnVehicleRepaired(float health)
+    {
+        isDead = false;
+        rb.linearDamping = linearDrag;
+        rb.angularDamping = angularDrag;
+        targetHeight = transform.position.y;
+    }
+
+    private float arrestFreezeTimer;
+
+    private void OnArrested()
+    {
+        arrestFreezeTimer = 3f;
     }
 
     void Update()
     {
+        if (isDead) return;
+
+        // Arrest freeze — block input temporarily
+        if (arrestFreezeTimer > 0f)
+        {
+            arrestFreezeTimer -= Time.deltaTime;
+            moveInput = Vector2.zero;
+            verticalInput = 0f;
+            return;
+        }
+
         HandleInputs();
         
         if (enableAllJuice)
@@ -194,6 +261,8 @@ public class FlyingCarController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isDead) return;
+
         ApplyFlightPhysics();
     }
 
@@ -277,6 +346,11 @@ public class FlyingCarController : MonoBehaviour
                 // We normalize it against maxForwardSpeed so the tilt builds up with the acceleration!
                 float normalizedSpeed = currentLocalZSpeed / maxForwardSpeed;
                 float desiredPitch = normalizedSpeed * maxPitchTilt;
+
+                // Vertical juice: tilt nose up when ascending, nose down when descending
+                if (enableVerticalJuice)
+                    desiredPitch += -verticalInput * maxVerticalPitchTilt;
+
                 float desiredRoll = -moveInput.x * maxRollTilt;
 
                 // JUICE UPGRADE: SmoothDamp creates a weighty, spring-like feel. 
@@ -299,6 +373,17 @@ public class FlyingCarController : MonoBehaviour
                     rb.AddTorque(correctionTorque * rb.mass * Time.fixedDeltaTime, ForceMode.Force);
                 }
             }
+
+            // Thruster rumble — small random lateral jitter when ascending/descending
+            if (enableVerticalJuice && Mathf.Abs(verticalInput) > 0.01f)
+            {
+                Vector3 rumble = new Vector3(
+                    Random.Range(-1f, 1f),
+                    0f,
+                    Random.Range(-1f, 1f)
+                ) * thrusterRumbleStrength * Mathf.Abs(verticalInput);
+                rb.AddForce(rumble * Time.fixedDeltaTime, ForceMode.Force);
+            }
         }
         else if (enableDynamicTilt) // If AllJuice is off but we still want to stabilize flat
         {
@@ -318,22 +403,37 @@ public class FlyingCarController : MonoBehaviour
 
     private void HandleJuicyVisuals()
     {
+        // Revert squash impulse back to 1 over time
+        currentSquash = Mathf.Lerp(currentSquash, 1f, Time.deltaTime * 5f);
+
+        float verticalVel = rb.linearVelocity.y;
+        float totalStretchY = 0f;
+        float totalStretchXZ = 0f;
+
+        // Cartoony squash from vertical velocity (original behavior)
         if (enableCartoonySquash)
         {
-            // Add a slight squash and stretch effect based on vertical velocity
-            float verticalVel = rb.linearVelocity.y;
-            float stretch = Mathf.Clamp(verticalVel * 0.02f, -0.3f, 0.3f);
-            
-            // Revert back over time smoothly
-            currentSquash = Mathf.Lerp(currentSquash, 1f, Time.deltaTime * 5f);
-            
-            // Stretch Y, Squash X/Z
-            Vector3 targetScale = originalScale + new Vector3(-stretch * 0.5f, stretch + (currentSquash - 1f), -stretch * 0.5f);
+            float cartoonyStretch = Mathf.Clamp(verticalVel * 0.02f, -0.3f, 0.3f);
+            totalStretchY += cartoonyStretch + (currentSquash - 1f);
+            totalStretchXZ += -cartoonyStretch * 0.5f;
+        }
+
+        // Vertical juice squash/stretch — subtle body deformation when thrusting up/down
+        if (enableVerticalJuice && Mathf.Abs(verticalInput) > 0.01f)
+        {
+            float vStretch = verticalInput * verticalSquashStretchAmount;
+            totalStretchY += vStretch;
+            totalStretchXZ += -vStretch * 0.5f;
+        }
+
+        bool hasEffect = enableCartoonySquash || (enableVerticalJuice && Mathf.Abs(verticalInput) > 0.01f);
+        if (hasEffect)
+        {
+            Vector3 targetScale = originalScale + new Vector3(totalStretchXZ, totalStretchY, totalStretchXZ);
             transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * 10f);
         }
         else
         {
-            // If cartoony squash is disabled, ensure scale is rigid
             transform.localScale = originalScale;
         }
     }

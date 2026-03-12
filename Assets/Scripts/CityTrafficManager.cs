@@ -22,6 +22,10 @@ public class CityTrafficManager : MonoBehaviour
     [Tooltip("Maximum max speed for AI cars")]
     public float maxSpeed = 30f;
 
+    [Header("AI Health")]
+    [Tooltip("Max health for each AI car")]
+    public float aiCarHealth = 60f;
+
     private Transform carContainer;
 
     void Start()
@@ -76,6 +80,11 @@ public class CityTrafficManager : MonoBehaviour
             ai.currentWaypointIndex = (startIndex + 1) % path.waypoints.Length;
             ai.flyHeight = carHeight;
             ai.maxSpeed = Random.Range(minSpeed, maxSpeed);
+
+            VehicleHealth health = car.GetComponent<VehicleHealth>();
+            if (health == null) health = car.AddComponent<VehicleHealth>();
+            health.maxHealth = aiCarHealth;
+            health.onlyPlayerDamage = true;
         }
     }
 }

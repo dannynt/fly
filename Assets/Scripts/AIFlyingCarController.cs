@@ -56,6 +56,14 @@ public class AIFlyingCarController : MonoBehaviour
     public float tiltSmoothTime = 0.15f;
     public float stabilizationStrength = 300f;
 
+    [Header("Vertical Juice")]
+    [Tooltip("Pitch tilt (degrees) when ascending/descending. Nose up when rising, down when diving.")]
+    public float maxVerticalPitchTilt = 15f;
+    [Tooltip("How much the car stretches vertically during altitude transitions.")]
+    public float verticalSquashStretchAmount = 0.08f;
+    [Tooltip("Upward impulse burst when taking off from parked.")]
+    public float takeoffBurstForce = 3000f;
+
     [Header("Damping")]
     public float linearDrag = 3f;
     public float angularDrag = 5f;
@@ -72,6 +80,8 @@ public class AIFlyingCarController : MonoBehaviour
     [HideInInspector] public int currentWaypointIndex;
 
     private Rigidbody rb;
+    private VehicleHealth vehicleHealth;
+    private bool isDead;
     private float turnInput;
     private float throttleInput;
     private float currentPitchTarget;
@@ -79,6 +89,9 @@ public class AIFlyingCarController : MonoBehaviour
     private float pitchVelocity;
     private float rollVelocity;
     private float currentTargetSpeed;
+
+    // Vertical juice state
+    private Vector3 originalScale;
 
     // State machine
     private AIState state = AIState.Cruising;
@@ -93,13 +106,38 @@ public class AIFlyingCarController : MonoBehaviour
         rb.linearDamping = linearDrag;
         rb.angularDamping = angularDrag;
 
+        originalScale = transform.localScale;
         currentTargetHeight = flyHeight;
         stateTimer = Random.Range(minCruiseTime, maxCruiseTime);
         driftPhaseOffset = Random.Range(0f, Mathf.PI * 2f);
+
+        vehicleHealth = GetComponent<VehicleHealth>();
+        if (vehicleHealth != null)
+            vehicleHealth.OnDeath += OnVehicleDeath;
+    }
+
+    void OnDestroy()
+    {
+        if (vehicleHealth != null)
+            vehicleHealth.OnDeath -= OnVehicleDeath;
+    }
+
+    private void OnVehicleDeath()
+    {
+        isDead = true;
+        rb.linearDamping = 0.5f;
+        rb.angularDamping = 0.5f;
+    }
+
+    void Update()
+    {
+        if (isDead) return;
+        ApplyVerticalJuiceVisuals();
     }
 
     void FixedUpdate()
     {
+        if (isDead) return;
         if (waypoints == null || waypoints.Length < 2) return;
         UpdateState();
         ComputeAIInputs();
@@ -155,6 +193,9 @@ public class AIFlyingCarController : MonoBehaviour
                 {
                     state = AIState.Ascending;
                     currentTargetHeight = flyHeight;
+
+                    // Takeoff burst — a satisfying upward kick when lifting off
+                    rb.AddForce(Vector3.up * takeoffBurstForce, ForceMode.Impulse);
                 }
                 break;
 
@@ -255,6 +296,13 @@ public class AIFlyingCarController : MonoBehaviour
         // 5. Dynamic tilt (pitch when accelerating, roll when turning)
         float normalizedSpeed = currentLocalZSpeed / maxSpeed;
         float desiredPitch = normalizedSpeed * maxPitchTilt;
+
+        // Vertical juice: tilt nose up when ascending, nose down when descending
+        if (state == AIState.Ascending)
+            desiredPitch += -maxVerticalPitchTilt;
+        else if (state == AIState.Descending)
+            desiredPitch += maxVerticalPitchTilt;
+
         float desiredRoll = -turnInput * maxRollTilt;
 
         currentPitchTarget = Mathf.SmoothDamp(currentPitchTarget, desiredPitch, ref pitchVelocity, tiltSmoothTime);
@@ -271,6 +319,23 @@ public class AIFlyingCarController : MonoBehaviour
         {
             Vector3 correctionTorque = axis.normalized * (angle * stabilizationStrength);
             rb.AddTorque(correctionTorque * rb.mass * Time.fixedDeltaTime, ForceMode.Force);
+        }
+    }
+
+    private void ApplyVerticalJuiceVisuals()
+    {
+        bool transitioning = state == AIState.Ascending || state == AIState.Descending;
+        if (transitioning)
+        {
+            // Stretch vertically when ascending, squash when descending
+            float dir = state == AIState.Ascending ? 1f : -1f;
+            float stretch = dir * verticalSquashStretchAmount;
+            Vector3 target = originalScale + new Vector3(-stretch * 0.5f, stretch, -stretch * 0.5f);
+            transform.localScale = Vector3.Lerp(transform.localScale, target, Time.deltaTime * 8f);
+        }
+        else
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, originalScale, Time.deltaTime * 5f);
         }
     }
 }
