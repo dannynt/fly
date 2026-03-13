@@ -1,0 +1,373 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6063156225646335945
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GlobalToonEffect
+  m_Shader: {fileID: 4800000, guid: 061c05407edd722478eaafd818860dd9, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ENABLEBLEED_ON
+  - _ENABLEBLOOM_ON
+  - _ENABLECHROMA_ON
+  - _ENABLECOLORSHIFT_ON
+  - _ENABLECOLORWASH_ON
+  - _ENABLECURVATURE_ON
+  - _ENABLEEDGEGLOW_ON
+  - _ENABLEEDGEINK_ON
+  - _ENABLEEDGES_ON
+  - _ENABLEGRADING_ON
+  - _ENABLEHALFTONE_ON
+  - _ENABLEHATCHING_ON
+  - _ENABLENEONEDGES_ON
+  - _ENABLEOUTLINES_ON
+  - _ENABLEPIXELATION_ON
+  - _ENABLERADIALBLUR_ON
+  - _ENABLESCANLINES_ON
+  - _ENABLESCAN_ON
+  - _ENABLESCRATCHES_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BASE_COLOR_MAP:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EMISSION_COLOR_MAP:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _METALNESS_MAP:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NORMAL_MAP:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SPECULAR_COLOR_MAP:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SPECULAR_IOR_MAP:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SPECULAR_ROUGHNESS_MAP:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BleedAmount: 0
+    - _BleedJitter: 0
+    - _BleedRadius: 1
+    - _BlindsAlpha: 0.4
+    - _BlindsAngle: 0.5
+    - _BlindsCount: 37.99
+    - _BlockSize: 11.4
+    - _BloomAmount: 0.248
+    - _BloomIntensity: 0.942
+    - _BloomSpread: 2.97
+    - _BloomThreshold: 1
+    - _BlurAmount: 0.03
+    - _BlurCenter: 0.299
+    - _BreatheAmount: 0.01929
+    - _BreatheSpeed: 2.101
+    - _Brightness: 1.14
+    - _BrightnessShift: 1.1
+    - _BrushRadius: 3
+    - _CanvasScale: 300
+    - _CanvasStrength: 0.05
+    - _ChromaBoost: 1
+    - _ChromaOffset: 0.003
+    - _ColorCount: 2.29
+    - _ColorDepth: 31
+    - _ColorWashStrength: 0.6
+    - _Contrast: 1
+    - _ContrastBoost: 3
+    - _CurvatureAmount: 0.1
+    - _DarkThreshold: 0.175
+    - _DarkenAmount: 0.95
+    - _DataAlpha: 0.1
+    - _DataScale: 12
+    - _DataSpeed: 8
+    - _DegradeAmount: 0.3
+    - _DesatAmount: 0.7
+    - _Desaturation: 0.15
+    - _DistortAmount: 0.003
+    - _DistortScale: 15
+    - _DotScale: 10
+    - _DotShape: 0
+    - _DotStrength: 0.7
+    - _EdgeDarkenAmount: 0
+    - _EdgeDarkenSensitivity: 0.4
+    - _EdgeDarkenThickness: 1.971
+    - _EdgeGlowPower: 2.5
+    - _EdgeGlowSens: 0.08
+    - _EdgeGlowThickness: 1.5
+    - _EdgeSens: 0.0895
+    - _EdgeSensitivity: 0.08
+    - _EdgeThick: 0.5
+    - _EdgeThickness: 4
+    - _EdgeThreshold: 0.01
+    - _EnableBleed: 1
+    - _EnableBlinds: 0
+    - _EnableBlockGlitch: 1
+    - _EnableBloom: 1
+    - _EnableBreathe: 0
+    - _EnableBrushStroke: 1
+    - _EnableCanvas: 1
+    - _EnableChroma: 1
+    - _EnableColorShift: 1
+    - _EnableColorWash: 1
+    - _EnableCurvature: 1
+    - _EnableData: 0
+    - _EnableDegradation: 1
+    - _EnableDistort: 1
+    - _EnableDots: 1
+    - _EnableEdge: 1
+    - _EnableEdgeDarken: 1
+    - _EnableEdgeGlow: 1
+    - _EnableEdgeInk: 1
+    - _EnableEdges: 1
+    - _EnableExternalAlpha: 0
+    - _EnableFlicker: 0
+    - _EnableFog: 1
+    - _EnableFringe: 0
+    - _EnableFrost: 1
+    - _EnableGlitch: 0
+    - _EnableGlow: 0
+    - _EnableGrading: 1
+    - _EnableGrain: 0
+    - _EnableGrid: 0
+    - _EnableHalftone: 1
+    - _EnableHatching: 1
+    - _EnableIceVig: 1
+    - _EnableImpasto: 1
+    - _EnableNeonEdges: 1
+    - _EnableNoise: 1
+    - _EnableOutlines: 1
+    - _EnablePaintEdge: 1
+    - _EnablePaper: 0
+    - _EnablePigment: 1
+    - _EnablePixelation: 1
+    - _EnableRGBShift: 1
+    - _EnableRadialBlur: 1
+    - _EnableRain: 0
+    - _EnableRays: 0
+    - _EnableScan: 1
+    - _EnableScanLines: 1
+    - _EnableScanNoise: 1
+    - _EnableScanlines: 1
+    - _EnableScratches: 1
+    - _EnableSepia: 0
+    - _EnableShimmer: 1
+    - _EnableSpeedLines: 0
+    - _EnableSplit: 0
+    - _EnableStatic: 0
+    - _EnableTracking: 0
+    - _EnableVignette: 0
+    - _EnableWaves: 0
+    - _EnableWobble: 0
+    - _FlickerAmount: 0.05
+    - _FlickerSpeed: 29.48
+    - _FlickerStrength: 0
+    - _FogDensity: 0.15
+    - _FogHeight: 0.2
+    - _FringeOffset: 0.00452
+    - _FrostEdge: 0.4
+    - _FrostIntensity: 0.3
+    - _FrostScale: 150
+    - _FrostSharpness: 0.2
+    - _Gamma: 1.301
+    - _GlitchBlockSize: 20
+    - _GlitchIntensity: 0
+    - _GlitchRate: 0.99
+    - _GlitchShift: 0.02
+    - _GlitchSpeed: 1
+    - _Glossiness: 0.5
+    - _GlowIntensity: 0.241
+    - _GlowSpread: 1
+    - _GrainIntensity: 0.1088
+    - _GrainScale: 1000
+    - _GridAlpha: 0.1
+    - _GridScale: 30
+    - _GridSize: 40
+    - _HalftoneColor: 0
+    - _HalftoneScale: 2
+    - _HalftoneShadowOnly: 0.306
+    - _HalftoneStrength: 0.071
+    - _HatchDensity: 23.9
+    - _HatchThreshold: 0.1386
+    - _HeatContrast: 1.116
+    - _HighlightBoost: 1.293
+    - _HueShiftAmount: 0
+    - _HueShiftSpeed: 0
+    - _IceVigIntensity: 1
+    - _ImpastoStrength: 0.12
+    - _ImpastoThreshold: 0.75
+    - _InvertHeat: 0
+    - _LinesDensity: 600
+    - _LinesThickness: 0.458
+    - _METALNESS: 0
+    - _Metallic: 0
+    - _MidThreshold: 0.3397
+    - _Mode: 0
+    - _NeonColorSpeed: 0
+    - _NeonGlow: 5
+    - _NeonSensitivity: 0.1964
+    - _NeonThickness: 1.185
+    - _NoiseIntensity: 0.06
+    - _OutlineDepthThreshold: 0.05
+    - _OutlineNormalThreshold: 1
+    - _OutlineSens: 0.1
+    - _OutlineThick: 2.5
+    - _OutlineThickness: 0.5
+    - _PaintEdgeDarken: 0.2
+    - _PaintEdgeSensitivity: 0.08
+    - _PaintEdgeThickness: 1.5
+    - _Palette: 0
+    - _PaperScale: 478
+    - _PaperStrength: 0.3179
+    - _PigmentScale: 50
+    - _PigmentStrength: 0
+    - _PixelSize: 1
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _RGBShiftAmount: 0
+    - _RainBrightness: 0.3
+    - _RainColumns: 40.3
+    - _RainLength: 3
+    - _RainSpeed: 1
+    - _RayAngle: 0
+    - _RayCount: 2
+    - _RayIntensity: 0
+    - _RayWidth: 0.2991
+    - _SPECULAR_IOR: 1.5
+    - _SPECULAR_ROUGHNESS: 0
+    - _Saturation: 1.313
+    - _ScanAlpha: 0.2138
+    - _ScanBrightness: 0.4
+    - _ScanDensity: 800
+    - _ScanNoiseIntensity: 0.0305
+    - _ScanNoiseSpeed: 1
+    - _ScanSpeed: 0.731
+    - _ScanWidth: 0.0186
+    - _ScanlineAlpha: 0.3967
+    - _ScanlineDensity: 979
+    - _ScanlineFrequency: 1257
+    - _ScanlineIntensity: 0.248
+    - _ScanlineSpeed: 0.51
+    - _SceneRetain: 0
+    - _ScratchBrightness: 0.3094
+    - _ScratchDensity: 0.96455
+    - _SepiaStrength: 0.3961
+    - _ShadowCrush: 0.2816
+    - _Sharpness: 2
+    - _ShimmerIntensity: 0.2
+    - _ShimmerScale: 500
+    - _ShimmerSpeed: 8
+    - _ShimmerThreshold: 0.95
+    - _Softness: 12.61
+    - _SpeedLineCount: 24
+    - _SpeedLineInner: 0.3
+    - _SpeedLineWidth: 0.03
+    - _SplitOffset: 0.003
+    - _StaticIntensity: 0.1
+    - _Steps: 16
+    - _StrokeScale: 80
+    - _StrokeStrength: 0.06
+    - _TintStrength: 0.35
+    - _TrackingDistort: 0.05
+    - _TrackingOffset: 0.116
+    - _TrackingSpeed: 0.1
+    - _VigIntensity: 0.03
+    - _VigRadius: 0.5
+    - _VigRoundness: 0.825
+    - _VigSoftness: 0.1
+    - _VignetteIntensity: 0.087
+    - _VignetteSmoothness: 0.591
+    - _WarmShift: 0.03
+    - _WaveAmplitude: 0.01195
+    - _WaveFrequency: 20.05
+    - _WaveSpeed: 1.736
+    - _WireframeAlpha: 0.3
+    - _WobbleAmount: 0.00462
+    - _WobbleScale: 5
+    - _WobbleSpeed: 0
+    - _WorldEdgeBoost: 0.837
+    - _WorldRetain: 0
+    m_Colors:
+    - _BASE_COLOR: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EMISSION_COLOR: {r: 0, g: 0, b: 0, a: 0}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _FogColor: {r: 0.85, g: 0.9, b: 1, a: 1}
+    - _HoloColor: {r: 0, g: 0.8, b: 1, a: 1}
+    - _HoloColor2: {r: 0.3254717, g: 1, b: 0.66405845, a: 1}
+    - _IceTint: {r: 0.7, g: 0.85, b: 1, a: 1}
+    - _IceVigColor: {r: 0.6, g: 0.75, b: 0.95, a: 1}
+    - _InkColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NeonColor1: {r: 1, g: 1, b: 1, a: 1}
+    - _NeonColor2: {r: 1, g: 0, b: 0, a: 1}
+    - _OutlineCol: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PaperColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+    - _RainColor: {r: 1, g: 0.15873644, b: 0, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SPECULAR_COLOR: {r: 1, g: 1, b: 1, a: 0}
+    - _TintHighlights: {r: 0, g: 0.67105293, b: 1, a: 1}
+    - _TintShadows: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
+    - _VigColor: {r: 0.09999997, g: 0.049999982, b: 0.19999996, a: 1}
+    - _VignetteColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WorldTint: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

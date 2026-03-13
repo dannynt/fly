@@ -67,6 +67,23 @@ public class CityGenerator : MonoBehaviour
     [Tooltip("Distance between waypoints along roads")]
     public float waypointSpacing = 8f;
 
+    [Header("Variety")]
+    [Tooltip("Chance (0-1) that a city block is left empty as a park or plaza")]
+    [Range(0f, 1f)]
+    public float parkBlockChance = 0.1f;
+
+    [Tooltip("Per-block density varies by \u00b1 this amount around buildingDensity")]
+    public float densityVariation = 0.3f;
+
+    [Tooltip("Maximum random position offset within each building slot")]
+    public float positionJitter = 1.5f;
+
+    [Tooltip("Random scale range for building footprints (e.g. 0.25 means 0.75x to 1.25x)")]
+    public float buildingScaleVariation = 0.25f;
+
+    [Tooltip("Allow any rotation instead of 90-degree snaps")]
+    public bool freeRotation = true;
+
     [Header("Randomization")]
     public int seed = 42;
 
@@ -152,16 +169,20 @@ public class CityGenerator : MonoBehaviour
         {
             for (int bz = 0; bz < gridSize.y; bz++)
             {
+                if (Random.value < parkBlockChance) continue;
+
                 float originX = roadWidth + bx * stride;
                 float originZ = roadWidth + bz * stride;
 
+                float blockDensity = Mathf.Clamp01(buildingDensity + Random.Range(-densityVariation, densityVariation));
+
                 Transform block = CreateChild($"Block_{bx}_{bz}", container);
-                FillBlock(block, originX, originZ);
+                FillBlock(block, originX, originZ, blockDensity);
             }
         }
     }
 
-    private void FillBlock(Transform parent, float originX, float originZ)
+    private void FillBlock(Transform parent, float originX, float originZ, float density)
     {
         float usable = blockSize - 2f * buildingMargin;
         if (usable <= 0f || buildingsPerBlockSide <= 0) return;
@@ -172,10 +193,10 @@ public class CityGenerator : MonoBehaviour
         {
             for (int cz = 0; cz < buildingsPerBlockSide; cz++)
             {
-                if (Random.value > buildingDensity) continue;
+                if (Random.value > density) continue;
 
-                float x = originX + buildingMargin + (cx + 0.5f) * cell;
-                float z = originZ + buildingMargin + (cz + 0.5f) * cell;
+                float x = originX + buildingMargin + (cx + 0.5f) * cell + Random.Range(-positionJitter, positionJitter);
+                float z = originZ + buildingMargin + (cz + 0.5f) * cell + Random.Range(-positionJitter, positionJitter);
 
                 StackBuilding(parent, new Vector3(x, 0f, z));
             }
@@ -186,11 +207,15 @@ public class CityGenerator : MonoBehaviour
     {
         int floors = Random.Range(minHeight, maxHeight + 1);
         int length = Random.Range(minLength, maxLength + 1);
-        float yaw   = 90f * Random.Range(0, 4);
+        float yaw = freeRotation ? Random.Range(0f, 360f) : 90f * Random.Range(0, 4);
 
         Transform building = CreateChild("Building", parent);
         building.localPosition = position;
         building.localRotation = Quaternion.Euler(0f, yaw, 0f);
+
+        float scaleX = 1f + Random.Range(-buildingScaleVariation, buildingScaleVariation);
+        float scaleZ = 1f + Random.Range(-buildingScaleVariation, buildingScaleVariation);
+        building.localScale = new Vector3(scaleX, 1f, scaleZ);
 
         float halfLen = (length - 1) * chunkWidth * 0.5f;
         bool hasGround = groundFloorChunks != null && groundFloorChunks.Length > 0;

@@ -47,6 +47,9 @@ public class AIFlyingCarController : MonoBehaviour
     [Tooltip("Chance (0-1) the car will actually land when the timer fires")]
     [Range(0f, 1f)]
     public float landingChance = 0.3f;
+    [Tooltip("Chance (0-1) to land on a building rooftop instead of the ground")]
+    [Range(0f, 1f)]
+    public float roofLandingChance = 0.5f;
     [Tooltip("Speed multiplier while descending/ascending (slower near ground)")]
     public float transitionSpeedMult = 0.4f;
 
@@ -96,6 +99,7 @@ public class AIFlyingCarController : MonoBehaviour
     // State machine
     private AIState state = AIState.Cruising;
     private float currentTargetHeight;
+    private float landingTargetHeight;
     private float stateTimer;
     private float driftPhaseOffset;
 
@@ -164,42 +168,40 @@ public class AIFlyingCarController : MonoBehaviour
                     if (Random.value < landingChance)
                     {
                         state = AIState.Descending;
-                        // Find ground height below
-                        float groundY = landedHeight;
-                        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, flyHeight + 20f))
-                            groundY = hit.point.y + landedHeight;
-                        currentTargetHeight = groundY;
+                        landingTargetHeight = FindLandingHeight();
                     }
                     stateTimer = Random.Range(minCruiseTime, maxCruiseTime);
                 }
                 break;
 
             case AIState.Descending:
-                // Move target height down smoothly
-                if (Mathf.Abs(transform.position.y - currentTargetHeight) < 1f &&
-                    Mathf.Abs(rb.linearVelocity.y) < 1f)
+                // Gradually lower target height for a smooth descent
+                currentTargetHeight = Mathf.MoveTowards(currentTargetHeight, landingTargetHeight, verticalTransitionSpeed * Time.fixedDeltaTime);
+
+                if (Mathf.Abs(transform.position.y - landingTargetHeight) < 0.5f &&
+                    Mathf.Abs(rb.linearVelocity.y) < 0.5f)
                 {
                     state = AIState.Parked;
                     stateTimer = Random.Range(minParkTime, maxParkTime);
-                    currentTargetSpeed = 0f;
                 }
                 break;
 
             case AIState.Parked:
-                // Sit on the road, engine idle
+                // Sit idle, engine off
                 throttleInput = 0f;
                 turnInput = 0f;
                 if (stateTimer <= 0f)
                 {
                     state = AIState.Ascending;
-                    currentTargetHeight = flyHeight;
-
                     // Takeoff burst — a satisfying upward kick when lifting off
                     rb.AddForce(Vector3.up * takeoffBurstForce, ForceMode.Impulse);
                 }
                 break;
 
             case AIState.Ascending:
+                // Gradually raise target height for a smooth ascent
+                currentTargetHeight = Mathf.MoveTowards(currentTargetHeight, flyHeight, verticalTransitionSpeed * Time.fixedDeltaTime);
+
                 if (Mathf.Abs(transform.position.y - flyHeight) < 1.5f)
                 {
                     state = AIState.Cruising;
@@ -243,9 +245,17 @@ public class AIFlyingCarController : MonoBehaviour
         float alignment = Mathf.Clamp01(1f - absAngle / slowdownAngle);
         throttleInput = Mathf.Lerp(0.3f, 1f, alignment);
 
-        // Slow down during altitude transitions
-        if (state == AIState.Descending || state == AIState.Ascending)
-            throttleInput *= transitionSpeedMult;
+        // Gradually slow during descent, speed up during ascent
+        if (state == AIState.Descending)
+        {
+            float descentProgress = Mathf.InverseLerp(flyHeight, landingTargetHeight, currentTargetHeight);
+            throttleInput *= Mathf.Lerp(1f, transitionSpeedMult, descentProgress);
+        }
+        else if (state == AIState.Ascending)
+        {
+            float ascentProgress = Mathf.InverseLerp(0f, flyHeight, currentTargetHeight);
+            throttleInput *= Mathf.Lerp(transitionSpeedMult, 1f, ascentProgress);
+        }
 
         // Collision avoidance — brake when a rigidbody (another car) is ahead
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, detectionRange))
@@ -291,7 +301,7 @@ public class AIFlyingCarController : MonoBehaviour
 
         // 4. Anti-gravity hover assist (reduce when parked on the ground)
         float assistMult = state == AIState.Parked ? 0f : hoverAssist;
-        rb.AddForce(-Physics.gravity * rb.mass * assistMult * Time.fixedDeltaTime, ForceMode.Force);
+        rb.AddForce(-Physics.gravity * rb.mass * assistMult, ForceMode.Force);
 
         // 5. Dynamic tilt (pitch when accelerating, roll when turning)
         float normalizedSpeed = currentLocalZSpeed / maxSpeed;
@@ -320,6 +330,38 @@ public class AIFlyingCarController : MonoBehaviour
             Vector3 correctionTorque = axis.normalized * (angle * stabilizationStrength);
             rb.AddTorque(correctionTorque * rb.mass * Time.fixedDeltaTime, ForceMode.Force);
         }
+    }
+
+    private float FindLandingHeight()
+    {
+        float groundHeight = landedHeight;
+
+        // Find surface directly below
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit groundHit, 200f))
+            groundHeight = groundHit.point.y + landedHeight;
+
+        // Search nearby for building rooftops
+        float bestRoofHeight = -1f;
+        float searchRadius = 18f;
+        int numChecks = 8;
+        for (int i = 0; i < numChecks; i++)
+        {
+            float angle = i * (360f / numChecks) * Mathf.Deg2Rad;
+            Vector3 checkPos = transform.position + new Vector3(Mathf.Cos(angle) * searchRadius, 0f, Mathf.Sin(angle) * searchRadius);
+            checkPos.y = flyHeight + 50f;
+
+            if (Physics.Raycast(checkPos, Vector3.down, out RaycastHit hit, 200f))
+            {
+                float surfaceY = hit.point.y;
+                if (surfaceY > 3f && surfaceY < transform.position.y - 2f && surfaceY > bestRoofHeight)
+                    bestRoofHeight = surfaceY;
+            }
+        }
+
+        if (bestRoofHeight > 0f && Random.value < roofLandingChance)
+            return bestRoofHeight + landedHeight;
+
+        return groundHeight;
     }
 
     private void ApplyVerticalJuiceVisuals()

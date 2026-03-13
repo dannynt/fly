@@ -1,37 +1,63 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements"
-         xmlns:uie="UnityEditor.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
 
     <ui:Style src="GameHUD.uss" />
 
     <ui:VisualElement name="hud-root">
 
-        <!-- TOP-RIGHT: Speed + Health + Wanted stacked -->
-        <ui:VisualElement name="top-right-cluster">
+        <!-- ===== BOTTOM-RIGHT: Speedometer Dashboard ===== -->
+        <ui:VisualElement name="dashboard">
+            <!-- Corner decorations -->
+            <ui:VisualElement name="dash-corner-tl" class="corner-deco corner-tl" />
+            <ui:VisualElement name="dash-corner-tr" class="corner-deco corner-tr" />
+            <ui:VisualElement name="dash-corner-bl" class="corner-deco corner-bl" />
+            <ui:VisualElement name="dash-corner-br" class="corner-deco corner-br" />
+            <!-- Scanline overlay -->
+            <ui:VisualElement name="dash-scanlines" class="scanline-overlay" />
 
-            <!-- Speed readout -->
-            <ui:VisualElement name="speed-panel">
-                <ui:Label name="speed-value" text="0" />
-                <ui:Label name="speed-unit" text="KM/H" />
-                <ui:VisualElement name="speed-bar-track">
-                    <ui:VisualElement name="speed-bar-fill" />
+            <!-- Top row: Money + Wanted Stars -->
+            <ui:VisualElement name="dash-top-row">
+                <ui:VisualElement name="dash-money">
+                    <ui:Label name="money-icon" text="$" />
+                    <ui:Label name="money-value" text="500" />
+                </ui:VisualElement>
+                <ui:VisualElement name="dash-wanted">
+                    <ui:Label name="star-text" text="" />
                 </ui:VisualElement>
             </ui:VisualElement>
 
-            <!-- Health strip -->
-            <ui:VisualElement name="health-strip">
-                <ui:Label name="health-icon" text="HP" />
+            <!-- Separator -->
+            <ui:VisualElement class="dash-separator" />
+
+            <!-- Circular Speedometer -->
+            <ui:VisualElement name="speedo-container">
+                <ui:VisualElement name="speedo-ring" />
+                <ui:VisualElement name="speedo-glow" />
+                <ui:VisualElement name="speedo-ticks" />
+                <ui:VisualElement name="speedo-needle-pivot">
+                    <ui:VisualElement name="speedo-needle" />
+                    <ui:VisualElement name="speedo-needle-glow" />
+                </ui:VisualElement>
+                <ui:VisualElement name="speedo-center-cap" />
+                <ui:Label name="speed-value" text="0" />
+                <ui:Label name="speed-unit" text="KM/H" />
+            </ui:VisualElement>
+
+            <!-- Separator -->
+            <ui:VisualElement class="dash-separator" />
+
+            <!-- Health row -->
+            <ui:VisualElement name="dash-health-row">
+                <ui:Label name="health-label" text="HP" />
                 <ui:VisualElement name="health-bar-container">
+                    <ui:VisualElement name="health-bar-bg-glow" class="bar-bg-glow" />
                     <ui:VisualElement name="health-bar-fill" />
                 </ui:VisualElement>
                 <ui:Label name="health-text" text="100" />
             </ui:VisualElement>
 
-            <!-- Wanted (hidden when no heat) -->
-            <ui:VisualElement name="wanted-panel">
-                <ui:VisualElement name="star-row">
-                    <ui:Label name="wanted-label" text="WANTED" />
-                    <ui:Label name="star-text" text="" />
-                </ui:VisualElement>
+            <!-- Heat row (hidden when clean) -->
+            <ui:VisualElement name="dash-heat-row">
+                <ui:Label name="heat-label" text="HEAT" />
                 <ui:VisualElement name="heat-bar-container">
                     <ui:VisualElement name="heat-bar-fill" />
                 </ui:VisualElement>
@@ -39,61 +65,58 @@
 
         </ui:VisualElement>
 
-        <!-- BOTTOM-LEFT: Minimap -->
+        <!-- ===== BOTTOM-LEFT: Minimap ===== -->
         <ui:VisualElement name="minimap-panel">
             <ui:VisualElement name="minimap-image" />
             <ui:VisualElement name="minimap-blip" />
+            <ui:VisualElement name="minimap-border-glow" />
             <ui:Label name="minimap-label" text="MAP" />
         </ui:VisualElement>
 
-        <!-- TOP-LEFT: Money display -->
-        <ui:VisualElement name="money-panel">
-            <ui:Label name="money-icon" text="$" />
-            <ui:Label name="money-value" text="500" />
-        </ui:VisualElement>
-
-        <!-- LEFT-CENTER: Active delivery panel -->
+        <!-- ===== TOP-LEFT: Active Delivery Panel ===== -->
         <ui:VisualElement name="delivery-panel">
-            <ui:VisualElement name="delivery-header">
-                <ui:Label name="delivery-type-label" text="DELIVERY" />
-                <ui:Label name="delivery-status-label" text="Pick up package" />
-            </ui:VisualElement>
-
-            <!-- Reward -->
-            <ui:VisualElement name="delivery-reward-row">
-                <ui:Label name="delivery-reward-icon" text="$" />
-                <ui:Label name="delivery-reward-value" text="100" />
-            </ui:VisualElement>
-
-            <!-- Package health (fragile only) -->
-            <ui:VisualElement name="pkg-health-strip">
-                <ui:Label name="pkg-health-icon" text="PKG" />
-                <ui:VisualElement name="pkg-health-bar-container">
-                    <ui:VisualElement name="pkg-health-bar-fill" />
+            <ui:VisualElement name="delivery-accent" />
+            <ui:VisualElement name="delivery-content">
+                <ui:VisualElement name="delivery-header">
+                    <ui:Label name="delivery-type-label" text="DELIVERY" />
+                    <ui:Label name="delivery-status-label" text="Pick up package" />
                 </ui:VisualElement>
+                <ui:VisualElement name="delivery-reward-row">
+                    <ui:Label name="delivery-reward-icon" text="$" />
+                    <ui:Label name="delivery-reward-value" text="100" />
+                </ui:VisualElement>
+                <ui:VisualElement name="pkg-health-strip">
+                    <ui:Label name="pkg-health-icon" text="PKG" />
+                    <ui:VisualElement name="pkg-health-bar-container">
+                        <ui:VisualElement name="pkg-health-bar-fill" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="delivery-timer" text="45.0" />
             </ui:VisualElement>
-
-            <!-- Timer (timed only) -->
-            <ui:Label name="delivery-timer" text="45.0" />
         </ui:VisualElement>
 
-        <!-- CENTER: Arrest overlay -->
+        <!-- ===== RIGHT: Notification Toasts ===== -->
+        <ui:VisualElement name="notification-container" />
+
+        <!-- ===== CENTER: Arrest Overlay ===== -->
         <ui:VisualElement name="arrest-overlay">
             <ui:VisualElement name="arrest-box">
                 <ui:Label name="arrest-text" text="BUSTED" />
+                <ui:VisualElement name="arrest-stripe" />
                 <ui:Label name="arrest-penalty" text="-$0" />
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- CENTER: Delivery result flash -->
+        <!-- ===== CENTER: Delivery Result Flash ===== -->
         <ui:VisualElement name="delivery-result-overlay">
             <ui:Label name="delivery-result-text" text="" />
         </ui:VisualElement>
 
-        <!-- CENTER: WRECKED overlay -->
+        <!-- ===== CENTER: Wrecked Overlay ===== -->
         <ui:VisualElement name="wrecked-overlay">
             <ui:VisualElement name="wrecked-box">
                 <ui:Label name="wrecked-text" text="WRECKED" />
+                <ui:VisualElement name="wrecked-stripe" />
                 <ui:Button name="repair-btn" text="REPAIR ($200)" />
                 <ui:Button name="restart-btn" text="RESTART" />
             </ui:VisualElement>
